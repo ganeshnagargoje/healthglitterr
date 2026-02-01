@@ -27,7 +27,8 @@ Secondary Users (Optional): Caregivers or family members who support the patient
 
 **How does the interaction begin?**
 The interaction begins when a patient uploads medical or lab reports (PDF/images) or connects/records glucose readings from a glucometer device. 
-Users may also initiate interaction by asking questions about their reports, recent glucose trends, or overall health status through a conversational interface. 
+Users may also initiate interaction by asking questions about their reports, recent glucose trends, or overall health status through a conversational interface.
+
 ----------- 
 **Formal conversation Samples** 
 **Conversation 1: Lab Report Analysis & Kidney Risk Identification**
@@ -65,6 +66,7 @@ Goal Achieved:
 Continuous glucose data analyzed, cardiovascular risk highlighted, and holistic lifestyle recommendations delivered. 
 
 ----------- 
+
 **Hybrid Multi Agent Systems:**
 Agent 1: Medical Report Intelligence Agent 
 Lab report analysis and Glucometer reading analysis 
@@ -78,4 +80,5 @@ Agent 5: Multi language support:
 Review results and translate them into any regional language provided by user.    
 Agent 6: Integrate with health wearable device/App:  
 Track the fitness goal, reminder for medication, reminder for lab visit, reminder for doctor consultation.
+
 ----------- 
