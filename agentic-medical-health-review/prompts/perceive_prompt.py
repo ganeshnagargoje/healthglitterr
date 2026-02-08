@@ -1,3 +1,5 @@
+from langchain.prompts import ChatMessagePromptTemplate
+
 perceive_prompt = ChatPromptTemplate.from_messages([
     ("system",
      "You are a medical data perception agent. "
