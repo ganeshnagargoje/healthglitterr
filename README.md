@@ -5,7 +5,7 @@
 4. Pradeep CR   
 5. Amulya Kumar     
 
-**Problem Context (100 words):**   
+**Problem Context (100 words):**      
 
 **Agentic AI System for Diabetic Care & Risk Prevention:**
 Today, diabetic care is largely manual and fragmented. Patients collect lab reports and glucometer readings from multiple sources, often in paper or PDF form, and doctors review them during brief, infrequent consultations. Analysis is mostly limited to checking individual values against normal ranges, with little systematic trend or risk prediction. Secondary complications such as kidney disease, heart conditions, or vision problems are usually identified only after symptoms appear or during annual screenings. Lifestyle guidance is generic and not personalized, making care reactive rather than preventive and increasing the risk of delayed intervention and poorer long-term health outcomes. 
