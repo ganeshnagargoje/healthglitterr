@@ -1,0 +1,22 @@
+{
+  "spec_type": "input_contract",
+  "required_fields": [
+    "user_id",
+    "test_eval_id",
+    "lab_reports",
+    "consent_id"
+  ],
+  "user_id_schema": {
+    "name": "string",
+    "age": "number",
+    "gender": "string",
+    "height_cm": "number",
+    "weight_kg": "number",
+    "iso_language_code": "number",
+    "language_desc": "string"
+  },
+  "lab_reports_schema": {
+    "format": "pdf | image | other",
+    "uri": "string"
+  }
+}

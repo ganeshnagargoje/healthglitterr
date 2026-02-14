@@ -1,0 +1,11 @@
+{
+  "spec_type": "output_contract",
+  "required_sections": [
+    "user_info",
+    "key_findings",
+    "health_trend_and_risk",
+    "medication_and_interaction",
+    "holistic_health_review"
+  ],
+  "ordering_required": true
+}

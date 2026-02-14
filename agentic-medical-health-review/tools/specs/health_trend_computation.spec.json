@@ -1,0 +1,10 @@
+{
+  "spec_type": "trend_computation",
+  "minimum_reports_required": 2,
+  "trend_types": [
+    "increasing",
+    "decreasing",
+    "stable"
+  ],
+  "confidence_required": true
+}

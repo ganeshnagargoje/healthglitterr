@@ -1,0 +1,11 @@
+{
+  "spec_type": "extraction",
+  "required_fields_per_test": [
+    "test_name",
+    "test_value",
+    "unit",
+    "reference_range"
+  ],
+  "allowed_units_validation": true,
+  "unknown_test_handling": "FLAG"
+}

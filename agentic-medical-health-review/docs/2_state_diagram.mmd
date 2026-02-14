@@ -1,0 +1,29 @@
+stateDiagram-v2
+	[*] --> Receive_Input
+ 	Receive_Input : User submits data\n(User info + Lab reports + Consent)
+ 	Receive_Input --> Validate_Input
+ 	Validate_Input : Check minimal required fields\n(user_id, test_eval_id, lab reports)
+ 	Validate_Input --> Reject_Input : Missing / Invalid data
+	Reject_Input --> [*]
+ 	Validate_Input --> Store_Input : Valid data
+ 	Store_Input : Store raw user data & lab reports
+ 	Store_Input --> Extract_Lab_Data
+ 	Extract_Lab_Data : Parse PDFs / Images Extract test values
+ 	Extract_Lab_Data --> Map_Reference_Values
+ 	Map_Reference_Values : Map test values with reference ranges
+ 	Map_Reference_Values --> Detect_Mismatches
+ 	Detect_Mismatches : Identify mismatches (test vs reference)
+ 	Detect_Mismatches --> Compute_Trends
+ 	Compute_Trends : Analyze lab trends (historical / parameter-based)
+ 	Compute_Trends --> Risk_Assessment
+ 	Risk_Assessment : Assess health risks based on parameters
+ 	Risk_Assessment --> Medication_Recommendation
+ 	Medication_Recommendation : Suggest medications Flag doctor approval required
+ 	Medication_Recommendation --> Holistic_Review
+ 	Holistic_Review : Lifestyle & diet analysis (activity + food habits)
+ 	Holistic_Review --> Generate_Report
+ 	Generate_Report : Compile final response (User info + findings + risks)
+ 	Generate_Report --> Deliver_Output
+ 	Deliver_Output : Send structured report\nto user
+ 	Deliver_Output --> [*]
+

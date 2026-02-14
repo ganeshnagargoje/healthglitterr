@@ -1,0 +1,7 @@
+{
+  "spec_type": "medication_policy",
+  "can_prescribe": false,
+  "can_suggest": true,
+  "doctor_approval_required": true,
+  "interaction_check_required": true
+}

@@ -1,0 +1,187 @@
+{
+  "spec_id": "health_agent_master_v1",
+  "domain": "medical_report_analysis",
+  "description": "Master specification for agentic analysis of medical lab reports with consent, safety, compliance, and human-in-the-loop controls.",
+
+  "input_contract": {
+    "required_fields": {
+      "user_id": {
+        "name": "string",
+        "age": "number",
+        "gender": "string",
+        "height_cm": "number",
+        "weight_kg": "number",
+        "iso_language_code": "number",
+        "language_desc": "string"
+      },
+      "test_eval_id": "number",
+      "lab_reports": {
+        "type": "array",
+        "items": {
+          "format": "pdf | image | other",
+          "uri": "string"
+        }
+      },
+      "consent_id": "string"
+    },
+    "optional_fields": {
+      "activities_id": "number",
+      "food_habit_id": "number",
+      "device_id": "number",
+      "device_data": "array",
+      "mental_activities": "string"
+    }
+  },
+
+  "consent_and_compliance_policy": {
+    "consent_required": true,
+    "on_missing_consent": {
+      "behavior": "STOP_PROCESSING",
+      "allowed_actions": [
+        "request_consent",
+        "store_metadata_only"
+      ],
+      "state_transition": "CONSENT_REQUIRED"
+    },
+    "audit_required": true
+  },
+
+  "lab_report_extraction_policy": {
+    "required_fields_per_test": [
+      "test_name",
+      "test_value",
+      "unit",
+      "reference_range"
+    ],
+    "unit_validation_required": true,
+    "unknown_test_handling": "FLAG_AND_EXCLUDE",
+    "hallucination_prevention": true
+  },
+
+  "internal_processing_contract": {
+    "normalized_fields": {
+      "user_id": "string",
+      "test_eval_id": "number",
+      "language_id": "number",
+      "consent_id": "string"
+    },
+    "computed_fields": {
+      "mismatches": "array",
+      "computed_trends": "object",
+      "risk_assessment": "object"
+    },
+    "constraints": {
+      "no_medical_diagnosis": true,
+      "reference_range_required_for_analysis": true
+    }
+  },
+
+  "trend_computation_policy": {
+    "minimum_reports_required": 2,
+    "trend_types": [
+      "increasing",
+      "decreasing",
+      "stable"
+    ],
+    "confidence_score_required": true
+  },
+
+  "risk_assessment_policy": {
+    "allowed_risk_levels": [
+      "Low",
+      "Moderate",
+      "High"
+    ],
+    "risk_mapping_rules": {
+      "requires_reference_range": true,
+      "requires_trend_or_repeat_measurement": true
+    },
+    "forbidden_outputs": [
+      "confirmed diagnosis",
+      "disease declaration",
+      "clinical certainty"
+    ]
+  },
+
+  "medication_safety_policy": {
+    "can_prescribe": false,
+    "can_suggest": true,
+    "doctor_approval_required": true,
+    "interaction_check_required": true,
+    "default_recommendation": "Lifestyle modification first"
+  },
+
+  "localization_policy": {
+    "supported_languages": [1, 2, 3],
+    "fallback_language": 1,
+    "medical_term_translation": "controlled",
+    "output_language_must_match_user": true
+  },
+
+  "output_contract": {
+    "required_sections": {
+      "user_info": [
+        "user_id",
+        "test_eval_id",
+        "consent_id"
+      ],
+      "key_findings": [
+        "mismatch_summary",
+        "computed_results"
+      ],
+      "health_trend_and_risk": [
+        "health_trend",
+        "risk_assessment_details"
+      ],
+      "medication_and_interaction": [
+        "suggested_medications",
+        "doctor_approval_required"
+      ],
+      "holistic_health_review": [
+        "lifestyle_changes",
+        "diet_changes",
+        "overall_report_summary"
+      ]
+    },
+    "ordering_required": true,
+    "free_text_allowed": false
+  },
+
+  "agent_state_machine": {
+    "states": [
+      "INTAKE",
+      "CONSENT_REQUIRED",
+      "ANALYSIS",
+      "REVIEW_REQUIRED",
+      "COMPLETED",
+      "FAILED"
+    ],
+    "state_transitions": {
+      "INTAKE": {
+        "missing_consent": "CONSENT_REQUIRED",
+        "valid_input": "ANALYSIS"
+      },
+      "ANALYSIS": {
+        "medication_suggested": "REVIEW_REQUIRED",
+        "analysis_complete": "COMPLETED"
+      }
+    }
+  },
+
+  "failure_conditions": [
+    "missing_consent",
+    "invalid_lab_report",
+    "insufficient_user_data"
+  ],
+
+  "audit_and_traceability": {
+    "log_required": true,
+    "audit_fields": [
+      "timestamp",
+      "spec_version",
+      "input_validation_result",
+      "risk_level",
+      "state_transition"
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "status": "blocked",
+  "reason_code": "MISSING_CONSENT",
+  "user_info": {
+    "user_id": "Rohit-Kothapalli-38-M",
+    "test_eval_id": 100235
+  },
+  "message": {
+    "title": "Consent Required",
+    "description": "I’ve received your lab report, but I need your consent before analyzing health-related data.",
+    "action_required": "Please provide your consent to proceed with medical report analysis."
+  },
+  "next_state": "WAITING_FOR_CONSENT",
+  "safety_flags": {
+    "medical_processing_skipped": true,
+    "no_data_parsed": true,
+    "no_risk_assessment": true,
+    "no_medication_suggestions": true
+  },
+  "audit": {
+    "timestamp": "2026-02-10T16:45:00Z",
+    "compliance_check": "PASSED"
+  }
+}

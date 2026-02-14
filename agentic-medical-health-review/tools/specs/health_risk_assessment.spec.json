@@ -1,0 +1,13 @@
+{
+  "spec_type": "risk_assessment",
+  "allowed_risk_levels": [
+    "Low",
+    "Moderate",
+    "High"
+  ],
+  "forbidden_outputs": [
+    "diagnosis",
+    "disease_confirmation"
+  ],
+  "risk_mapping_requires_reference_range": true
+}

@@ -1,0 +1,50 @@
+{
+  "user_info": {
+    "user_id": "Joe-Smith-42-M",
+    "test_eval_id": 100234,
+    "consent_id": "CONSENT-2026-001"
+  },
+
+  "key_findings": {
+    "mismatch_summary": [
+      {
+        "parameter": "Fasting Glucose",
+        "observed": 128,
+        "reference_range": "70-99",
+        "status": "High"
+      }
+    ],
+    "computed_results": {
+      "trend": "Increasing over last 6 months"
+    }
+  },
+
+  "health_trend_and_risk": {
+    "health_trend": "Early metabolic risk trend detected",
+    "risk_assessment_details": {
+      "risk_level": "Moderate",
+      "associated_conditions": [
+        "Prediabetes"
+      ]
+    }
+  },
+
+  "medication_and_interaction": {
+    "suggested_medications": [
+      "Lifestyle modification first-line"
+    ],
+    "doctor_approval_required": true
+  },
+
+  "holistic_health_review": {
+    "lifestyle_changes": [
+      "Increase daily physical activity to 30–45 minutes",
+      "Reduce sedentary hours"
+    ],
+    "diet_changes": [
+      "Reduce refined carbohydrates",
+      "Increase fiber intake"
+    ],
+    "overall_report_summary": "Current findings suggest early metabolic imbalance. Medical consultation recommended before any medication."
+  }
+}

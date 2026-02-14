@@ -1,0 +1,31 @@
+{
+  "user_id": {
+    "name": "Joe Smith",
+    "age": 42,
+    "gender": "Male",
+    "height_cm": 172,
+    "weight_kg": 86,
+    "iso_language_id": "mr",
+    "lanuage": "marathi"
+  },
+  "test_eval_id": 100234,
+  "lab_reports": [
+    {
+      "format": "pdf",
+      "uri": "https://reports/ganesh_blood_report_jan2026.pdf"
+    }
+  ],
+  "consent_id": "CONSENT-2026-001",
+  "activities_id": 2,
+  "food_habit_id": 3,
+  "device_id": 11,
+  "device_data": [
+    {
+      "device_type": "glucometer",
+      "parameter": "fasting_glucose",
+      "value": 128,
+      "unit": "mg/dL",
+      "timestamp": "2026-01-15T07:30:00Z"
+    }
+  ]
+}

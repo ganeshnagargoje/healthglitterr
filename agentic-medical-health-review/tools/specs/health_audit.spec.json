@@ -1,0 +1,9 @@
+{
+  "spec_type": "audit",
+  "log_required": true,
+  "fields": [
+    "timestamp",
+    "spec_version",
+    "decision_summary"
+  ]
+}

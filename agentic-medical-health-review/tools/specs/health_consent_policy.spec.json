@@ -1,0 +1,12 @@
+{
+  "spec_type": "consent_policy",
+  "consent_required": true,
+  "blocking_behavior": {
+    "on_missing_consent": "STOP_PROCESSING"
+  },
+  "allowed_actions_without_consent": [
+    "request_consent",
+    "store_metadata"
+  ],
+  "audit_required": true
+}

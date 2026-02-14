@@ -1,0 +1,14 @@
+{
+  "spec_type": "state_machine",
+  "states": [
+    "INTAKE",
+    "CONSENT_REQUIRED",
+    "ANALYSIS",
+    "REVIEW_REQUIRED",
+    "COMPLETED"
+  ],
+  "error_transitions": {
+    "MISSING_CONSENT": "CONSENT_REQUIRED",
+    "INVALID_INPUT": "INTAKE"
+  }
+}

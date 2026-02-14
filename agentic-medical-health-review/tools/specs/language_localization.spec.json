@@ -1,0 +1,7 @@
+{
+  "spec_type": "localization",
+  "supported_languages": ["mr", "en", "hi","ta","te","ml","gu"],
+  "fallback_language": "en",
+  "medical_terms_translation": "controlled"
+}
+

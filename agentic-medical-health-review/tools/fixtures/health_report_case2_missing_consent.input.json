@@ -1,0 +1,29 @@
+{
+  "user_id": {
+    "name": "Rohit Kothapalli",
+    "age": 38,
+    "gender": "Male",
+    "height_cm": 168,
+    "weight_kg": 79,
+    "language_id": 1
+  },
+  "test_eval_id": 100235,
+  "lab_reports": [
+    {
+      "format": "image",
+      "uri": "https://reports/rohit_lipid_profile_feb2026.png"
+    }
+  ],
+  "activities_id": 1,
+  "food_habit_id": 2,
+  "device_id": 9,
+  "device_data": [
+    {
+      "device_type": "fitness_band",
+      "parameter": "daily_steps",
+      "value": 4200,
+      "unit": "steps",
+      "timestamp": "2026-02-01T18:30:00Z"
+    }
+  ]
+}
