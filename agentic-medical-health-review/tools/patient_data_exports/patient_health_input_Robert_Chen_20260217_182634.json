@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "export_timestamp": "2026-02-17T18:26:34.507599",
+    "validator_version": "1.0",
+    "data_type": "patient_health_input"
+  },
+  "validation_status": {
+    "is_valid": true,
+    "errors": {},
+    "warnings": []
+  },
+  "data": {
+    "user_id": {
+      "name": "Robert Chen",
+      "age": 42,
+      "gender": "Male",
+      "height_cm": 178.5,
+      "weight_kg": 82.3,
+      "iso_language_id": 2,
+      "language_desc": "English"
+    },
+    "consent_id": "CONSENT-2026-042",
+    "user_consent": "Yes",
+    "test_eval_id": 100567
+  }
+}
