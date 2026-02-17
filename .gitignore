@@ -11,3 +11,10 @@ env/
 Tools/__pycache__/
 requirements.txt
 .hypothesis/examples/
+.kiro/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.kiro/specs/medical-health-review-workflow/.config.kiro
