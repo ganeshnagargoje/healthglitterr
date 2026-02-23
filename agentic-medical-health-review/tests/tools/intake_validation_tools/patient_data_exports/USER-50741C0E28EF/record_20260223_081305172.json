@@ -1,0 +1,27 @@
+{
+  "user_id": "USER-50741C0E28EF",
+  "is_new_patient": true,
+  "metadata": {
+    "export_timestamp": "2026-02-23T08:13:05.172667",
+    "validator_version": "2.0",
+    "data_type": "patient_health_input",
+    "record_unique_id": "USER-50741C0E28EF_20260223_081305172"
+  },
+  "validation_status": {
+    "is_valid": true,
+    "errors": {},
+    "warnings": []
+  },
+  "data": {
+    "user_id": {
+      "name": "amulya",
+      "age": 32,
+      "gender": "Male",
+      "height_cm": 168.0,
+      "weight_kg": 85.0
+    },
+    "consent_id": "109",
+    "user_consent": "Yes",
+    "test_eval_id": 199
+  }
+}
