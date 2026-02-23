@@ -1,0 +1,29 @@
+{
+  "user_id": "USER-81985B46D59E",
+  "is_new_patient": true,
+  "metadata": {
+    "export_timestamp": "2026-02-19T08:40:40.510992",
+    "validator_version": "2.0",
+    "data_type": "patient_health_input",
+    "record_unique_id": "USER-81985B46D59E_20260219_084040510"
+  },
+  "validation_status": {
+    "is_valid": true,
+    "errors": {},
+    "warnings": [
+      "consent_id is not provided. User will need explicit consent."
+    ]
+  },
+  "data": {
+    "user_id": {
+      "name": "ganesh",
+      "age": 28,
+      "gender": "Male",
+      "height_cm": 166.0,
+      "weight_kg": 73.0,
+      "language_desc": "english"
+    },
+    "user_consent": "Yes",
+    "test_eval_id": 105
+  }
+}

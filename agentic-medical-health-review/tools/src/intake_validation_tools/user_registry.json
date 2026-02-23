@@ -6,5 +6,13 @@
     "created_at": "2026-02-19T07:03:55.174566",
     "records_count": 1,
     "last_updated": "2026-02-19T07:03:55.174852"
+  },
+  "USER-81985B46D59E": {
+    "name": "ganesh",
+    "age": 28,
+    "gender": "male",
+    "created_at": "2026-02-19T08:40:40.509202",
+    "records_count": 1,
+    "last_updated": "2026-02-19T08:40:40.509261"
   }
 }
