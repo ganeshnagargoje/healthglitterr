@@ -13,6 +13,7 @@ import os
 from datetime import datetime
 import uuid
 import pytest
+import pytest
 
 
 class UserIDSchema(BaseModel):
@@ -37,9 +38,9 @@ class UserIDSchema(BaseModel):
     @field_validator('gender')
     @classmethod
     def validate_gender(cls, v):
-        valid_genders = {'Male', 'Female', 'Other', 'male', 'female', 'other'}
-        if v not in valid_genders:
-            raise ValueError(f"Gender must be one of {valid_genders}")
+        valid_genders = {'male', 'female', 'other'}
+        if v.lower() not in valid_genders:
+            raise ValueError(f"Gender must be one of {{Male, Female, Other}}")
         return v.capitalize()
 
 
@@ -1131,63 +1132,3 @@ class TestValidateHealthInputResponseStructure:
         assert result['is_valid'] is False
         assert isinstance(result['errors'], dict)
         assert len(result['errors']) > 0
-
-
-
-    try:
-        # Collect patient input interactively
-        user_input = collect_patient_input()
-        
-        # Display what was collected for review
-        display_input_summary(user_input)
-        
-        # Validate the collected input
-        result = validate_health_input(
-            name=user_input['name'],
-            age=user_input['age'],
-            gender=user_input['gender'],
-            height_cm=user_input['height_cm'],
-            weight_kg=user_input['weight_kg'],
-            consent_id=user_input.get('consent_id'),
-            iso_language_id=user_input.get('iso_language_id'),
-            language_desc=user_input.get('language_desc'),
-            test_eval_id=user_input.get('test_eval_id'),
-            user_consent=user_input['user_consent']
-        )
-        
-        # Display validation result
-        display_validation_result(result)
-        
-        # Save to JSON if validation passed
-        if result['is_valid']:
-            json_filepath, user_id, is_new = save_validation_to_json(result, {
-                'name': user_input['name'],
-                'age': user_input['age'],
-                'gender': user_input['gender']
-            })
-            
-            print("\n" + "=" * 80)
-            print("DATA EXPORTED & REGISTERED")
-            print("=" * 80)
-            
-            if is_new:
-                print(f"\n✅ NEW PATIENT REGISTERED")
-                print(f"   User ID: {user_id}")
-                print(f"   Patient: {user_input['name']} (Age: {user_input['age']}, Gender: {user_input['gender']})")
-            else:
-                print(f"\n✅ EXISTING PATIENT FOUND")
-                print(f"   User ID: {user_id}")
-                print(f"   New record added to patient history")
-            
-            print(f"\n📁 Record saved to: {json_filepath}")
-            print(f"   History Location: patient_data_exports/{user_id}/")
-            print("\nThis record has been added to the patient's permanent history.")
-            print("All records are uniquely identified by USER_ID + TIMESTAMP.")
-            print("=" * 80)
-        
-    except KeyboardInterrupt:
-        print("\n\n⚠️  Process cancelled by user.")
-    except Exception as e:
-        print(f"\n❌ Unexpected error: {str(e)}")
-        import traceback
-        traceback.print_exc()
