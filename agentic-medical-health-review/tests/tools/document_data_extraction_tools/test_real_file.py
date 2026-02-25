@@ -11,7 +11,7 @@ import argparse
 import json
 
 # Add the tools/src directory to the path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "tools" / "src" / "document_data_extraction_tools"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "tools" / "src" / "document_data_extraction_tools" / "lab_report_parser"))
 
 from lab_report_parser import LabReportParser, extract_text_from_lab_report, extract_structured_lab_data
 from file_validator import FileValidator
