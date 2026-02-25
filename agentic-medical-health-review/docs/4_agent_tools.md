@@ -72,7 +72,7 @@
 - Disease confirmation
 - Diagnostic language
 
-## 4️⃣ Medication & Safety Tools
+## 4️⃣ Medication & Safety Tools - Removed 
 **8. medication_suggestion_tool**
 **Purpose**
 - Suggest non-prescriptive medication options
