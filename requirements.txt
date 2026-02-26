@@ -1,4 +1,6 @@
 # Core Dependencies for LLM Extraction
+# NOTE: Critical packages (numpy, opencv, paddlepaddle) use binary wheels only
+# This prevents long compilation times and ensures compatibility
 python-dotenv>=1.0.0
 openai>=1.0.0
 
@@ -11,8 +13,9 @@ Pillow>=10.0.0
 numpy==1.26.4
 
 # PaddleOCR and PaddlePaddle - Core OCR functionality
-paddleocr==2.7.0.3
+# Note: Installing paddleocr without PyMuPDF dependency (we don't use PDF features)
 paddlepaddle==2.6.2
+# paddleocr==2.7.0.3  # Commented out - will install manually without PyMuPDF
 
 # OpenCV - MUST match PaddleOCR requirements (<=4.6.0.66)
 opencv-python==4.6.0.66
@@ -41,6 +44,8 @@ rapidfuzz>=3.0.0
 # Property-Based Testing (optional)
 hypothesis>=6.0.0
 reportlab>=4.0.0
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
 
 # Database Dependencies
 psycopg2-binary>=2.9.9
@@ -48,8 +53,9 @@ sqlalchemy>=2.0.0
 alembic>=1.13.0
 
 # KNOWN CONFLICTS (non-critical):
-# - PyMuPDF: paddleocr wants <1.21.0 but system may have 1.27.1
-#   This conflict can be IGNORED as we use pdf2image for PDF processing
+# - PyMuPDF: paddleocr requires <1.21.0 which doesn't build on Python 3.12
+#   SOLUTION: Install paddleocr with --no-deps (we don't use its PDF features)
+#   We use pdf2image for PDF processing instead
 # - opencv-python-headless: If installed, will require numpy>=2.0.0
 #   DO NOT install opencv-python-headless - use opencv-python instead
  

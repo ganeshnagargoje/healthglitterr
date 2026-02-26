@@ -1,279 +1,325 @@
-# Docker Setup Guide for Medical Health Review System
+# 🐳 Docker Setup - Zero Dependency Installation
 
-This guide explains how to set up and run the Medical Health Review System with PostgreSQL using Docker.
+## Why Docker?
 
-## Prerequisites
+Docker solves the **"it works on my machine"** problem by ensuring:
+- ✅ **Identical environments** for all developers
+- ✅ **Zero manual dependency installation**
+- ✅ **No version conflicts**
+- ✅ **One-command setup**
+- ✅ **Works on Windows, Mac, and Linux**
 
-- Docker Desktop installed ([Download here](https://www.docker.com/products/docker-desktop))
-- Docker Compose (included with Docker Desktop)
+---
 
-## Quick Start
+## 🚀 Quick Start (3 Steps)
 
-### 1. Start PostgreSQL Database
+### 1. Install Docker Desktop
+Download and install from: https://www.docker.com/products/docker-desktop/
 
-Start only the PostgreSQL database:
-
+### 2. Clone & Setup
 ```bash
-docker-compose up -d postgres
+# Clone repository
+git clone <repository-url>
+cd healthglitterr
+
+# Run setup script
+# Windows (PowerShell):
+.\setup.ps1
+
+# Linux/Mac:
+chmod +x setup.sh
+./setup.sh
 ```
 
-This will:
-- Create a PostgreSQL 16 container
-- Initialize the database schema from `init-scripts/01-init-schema.sql`
-- Expose PostgreSQL on port 5432 (configurable via `.env`)
+### 3. Done! 🎉
+Everything is now running:
+- PostgreSQL database with all tables
+- Python application with all dependencies
+- All tools ready to use
 
-### 2. Verify Database is Running
+---
 
-Check the database health:
+## 📦 What Gets Installed Automatically
 
+### System Dependencies:
+- Python 3.12
+- PostgreSQL 16
+- poppler-utils (PDF processing)
+- OpenCV libraries (image processing)
+- PaddleOCR (OCR engine)
+- All required system libraries
+
+### Python Packages (from requirements.txt):
+- psycopg2-binary (PostgreSQL adapter)
+- pydantic (data validation)
+- paddleocr (OCR)
+- pdf2image (PDF processing)
+- openai (LLM integration)
+- pytest (testing)
+- And 30+ other dependencies
+
+### Database:
+- All tables created automatically
+- Sample data loaded
+- Ready for use
+
+---
+
+## 🎯 Common Commands
+
+### Using Makefile (Recommended - Linux/Mac):
 ```bash
-docker-compose ps
+make start          # Start all services
+make stop           # Stop all services
+make test           # Run all tests
+make logs           # View logs
+make shell          # Access application shell
+make db-shell       # Access database shell
+make help           # Show all commands
 ```
 
-You should see the `medical-health-review-db` container with status "healthy".
-
-### 3. Connect to Database
-
-The database is accessible at:
-- **Host**: `localhost`
-- **Port**: `5432` (default)
-- **Database**: `medical_health_review`
-- **User**: `postgres`
-- **Password**: `postgres`
-
-Connection string:
-```
-postgresql://postgres:postgres@localhost:5432/medical_health_review
-```
-
-## Optional: pgAdmin (Database Management UI)
-
-To start pgAdmin for database management:
-
+### Using Docker Compose (All Platforms):
 ```bash
-docker-compose --profile admin up -d pgadmin
-```
-
-Access pgAdmin at: http://localhost:5050
-- **Email**: `admin@medical-health.local`
-- **Password**: `admin`
-
-### Add PostgreSQL Server in pgAdmin
-
-1. Open pgAdmin at http://localhost:5050
-2. Right-click "Servers" → "Register" → "Server"
-3. General tab:
-   - Name: `Medical Health Review DB`
-4. Connection tab:
-   - Host: `postgres` (use service name, not localhost)
-   - Port: `5432`
-   - Database: `medical_health_review`
-   - Username: `postgres`
-   - Password: `postgres`
-5. Click "Save"
-
-## Configuration
-
-### Environment Variables
-
-Copy `.env.example` to `.env` and customize:
-
-```bash
-cp .env.example .env
-```
-
-Key database variables:
-```env
-POSTGRES_DB=medical_health_review
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/medical_health_review
-```
-
-### Custom Ports
-
-To use different ports, update your `.env` file:
-
-```env
-POSTGRES_PORT=5433
-PGADMIN_PORT=5051
-```
-
-Then restart the services:
-
-```bash
-docker-compose down
+# Start services
 docker-compose up -d
-```
 
-## Database Schema
-
-The database schema is automatically initialized from `init-scripts/01-init-schema.sql` when the container first starts. It includes:
-
-- **Tables**: users, medical_reports, health_parameters, normalized_parameters, trends, risk_flags, workflow_states, approval_requests, access_grants, audit_logs, normalization_audit_logs
-- **Enums**: user_role, validation_status, normalization_status, trend_direction, risk_level, etc.
-- **Indexes**: Optimized for common queries
-- **Triggers**: Auto-update timestamps
-
-## Common Commands
-
-### Start all services
-```bash
-docker-compose up -d
-```
-
-### Start with pgAdmin
-```bash
-docker-compose --profile admin up -d
-```
-
-### Stop all services
-```bash
+# Stop services
 docker-compose down
-```
 
-### Stop and remove volumes (deletes all data)
-```bash
-docker-compose down -v
-```
-
-### View logs
-```bash
-# All services
+# View logs
 docker-compose logs -f
 
-# PostgreSQL only
-docker-compose logs -f postgres
+# Run tests
+docker-compose exec app python -m pytest tests/
 
-# pgAdmin only
-docker-compose logs -f pgadmin
-```
+# Access shell
+docker-compose exec app bash
 
-### Access PostgreSQL CLI
-```bash
+# Access database
 docker-compose exec postgres psql -U postgres -d medical_health_review
 ```
 
-### Backup database
+---
+
+## 🧪 Running Tests
+
+### All Tests:
+```bash
+docker-compose exec app python -m pytest tests/ -v
+```
+
+### Specific Tests:
+```bash
+# Normalize lab data
+docker-compose exec app python tests/tools/document_data_extraction_tools/test_normalize_with_real_data.py
+
+# Lab report parser
+docker-compose exec app python tests/tools/document_data_extraction_tools/test_real_file.py tests/test_data/sample_reports/lab_report1_page_1.pdf
+
+# End-to-end integration
+docker-compose exec app python tests/tools/document_data_extraction_tools/test_end_to_end_integration.py tests/test_data/sample_reports/lab_report1_page_1.pdf
+```
+
+---
+
+## 🔧 Development Workflow
+
+### 1. Start Development:
+```bash
+docker-compose up -d
+```
+
+### 2. Make Code Changes:
+- Edit files on your machine
+- Changes are automatically reflected in container
+
+### 3. Run Tests:
+```bash
+docker-compose exec app python -m pytest tests/
+```
+
+### 4. View Logs:
+```bash
+docker-compose logs -f app
+```
+
+### 5. Stop When Done:
+```bash
+docker-compose down
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### "Cannot connect to Docker daemon"
+**Solution:** Start Docker Desktop
+
+### "Port already in use"
+**Solution:** Edit `.env` file and change ports:
+```env
+POSTGRES_PORT=5433
+APP_PORT=8001
+```
+
+### "Database connection failed"
+**Solution:** Wait for database to initialize:
+```bash
+docker-compose ps  # Check status
+# Wait until postgres shows "healthy"
+```
+
+### "Module not found"
+**Solution:** Rebuild containers:
+```bash
+docker-compose down
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+### "Out of disk space"
+**Solution:** Clean up Docker:
+```bash
+docker system prune -a --volumes
+```
+
+---
+
+## 📊 Accessing Services
+
+### Application
+- **URL:** http://localhost:8000
+- **Container:** medical-health-review-app
+
+### PostgreSQL Database
+- **Host:** localhost
+- **Port:** 5432
+- **Database:** medical_health_review
+- **User:** postgres
+- **Password:** postgres (change in .env)
+- **Connection String:** `postgresql://postgres:postgres@localhost:5432/medical_health_review`
+
+### pgAdmin (Optional)
+- **URL:** http://localhost:5050
+- **Email:** admin@example.com
+- **Password:** admin
+- **Start:** `docker-compose --profile admin up -d`
+
+---
+
+## 🔄 Updating Dependencies
+
+### After changing requirements.txt:
+```bash
+docker-compose down
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+### Or using Makefile:
+```bash
+make rebuild
+```
+
+---
+
+## 💾 Data Persistence
+
+Data is stored in Docker volumes and persists across container restarts:
+- `postgres_data` - Database files
+- `app_data` - Application data
+- `patient_data` - Patient records
+
+### Backup Database:
 ```bash
 docker-compose exec postgres pg_dump -U postgres medical_health_review > backup.sql
 ```
 
-### Restore database
+### Restore Database:
 ```bash
 docker-compose exec -T postgres psql -U postgres medical_health_review < backup.sql
 ```
 
-## Running the Application
+---
 
-### Option 1: Run Application Locally (Recommended for Development)
+## 🚀 Production Deployment
 
-1. Start PostgreSQL with Docker:
-   ```bash
-   docker-compose up -d postgres
-   ```
-
-2. Install Python dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Run the application:
-   ```bash
-   python main.py
-   ```
-
-### Option 2: Run Application in Docker
-
-Build and run the application container:
-
+### Build Production Image:
 ```bash
-docker build -t medical-health-review .
-docker run --network medical-health-network \
-  -e DATABASE_URL=postgresql://postgres:postgres@postgres:5432/medical_health_review \
-  -v $(pwd)/agentic-medical-health-review:/app/agentic-medical-health-review \
-  medical-health-review
+docker build -t medical-health-review:1.0.0 .
 ```
 
-## Troubleshooting
-
-### Database connection refused
-
-If you get "connection refused" errors:
-
-1. Check if PostgreSQL is running:
-   ```bash
-   docker-compose ps
-   ```
-
-2. Check PostgreSQL logs:
-   ```bash
-   docker-compose logs postgres
-   ```
-
-3. Verify the port is not in use:
-   ```bash
-   # Windows
-   netstat -ano | findstr :5432
-   
-   # Linux/Mac
-   lsof -i :5432
-   ```
-
-### Reset database
-
-To completely reset the database:
-
+### Push to Registry:
 ```bash
-docker-compose down -v
-docker-compose up -d postgres
+docker tag medical-health-review:1.0.0 your-registry/medical-health-review:1.0.0
+docker push your-registry/medical-health-review:1.0.0
 ```
 
-This will delete all data and reinitialize the schema.
+### Deploy:
+Use the production docker-compose.yml with:
+- Removed volume mounts for source code
+- Production environment variables
+- Proper secrets management
+- Health checks and monitoring
 
-### pgAdmin can't connect to PostgreSQL
+---
 
-When running pgAdmin in Docker, use the service name `postgres` as the host, not `localhost`.
+## 📚 Additional Documentation
 
-## Database Migrations
+- **Detailed Guide:** See `DOCKER_SETUP_GUIDE.md`
+- **Docker Docs:** https://docs.docker.com/
+- **Docker Compose Docs:** https://docs.docker.com/compose/
 
-For schema changes after initial setup, use Alembic:
+---
+
+## ✅ Verification
+
+After setup, verify everything works:
 
 ```bash
-# Initialize Alembic (first time only)
-alembic init alembic
+# 1. Check containers
+docker-compose ps
 
-# Create a migration
-alembic revision --autogenerate -m "Description of changes"
+# 2. Test database
+docker-compose exec app python -c "from models.database_connection import DatabaseConnection; with DatabaseConnection() as db: print('✅ Database OK')"
 
-# Apply migrations
-alembic upgrade head
+# 3. Run a test
+docker-compose exec app python tests/tools/document_data_extraction_tools/test_normalize_with_real_data.py
 ```
 
-## Security Notes
+If all pass: **✅ Setup Complete!**
 
-**Important**: The default credentials are for development only. For production:
+---
 
-1. Use strong passwords
-2. Don't expose PostgreSQL port publicly
-3. Use environment-specific `.env` files
-4. Enable SSL/TLS for database connections
-5. Implement proper access controls
-6. Regular backups
+## 🆘 Need Help?
 
-## Next Steps
+1. Check `DOCKER_SETUP_GUIDE.md` for detailed troubleshooting
+2. Run `make help` to see all available commands
+3. Check container logs: `docker-compose logs -f`
+4. Verify Docker is running: `docker ps`
 
-1. Start the database: `docker-compose up -d postgres`
-2. Verify connection: `docker-compose exec postgres psql -U postgres -d medical_health_review -c "SELECT version();"`
-3. Run your application with the database connection
-4. Implement database access layer using SQLAlchemy (see `requirements.txt`)
+---
 
-## Support
+## 🎉 Benefits for Your Team
 
-For issues or questions:
-- Check Docker logs: `docker-compose logs`
-- Verify environment variables in `.env`
-- Ensure Docker Desktop is running
-- Check port availability
+### For Developers:
+- ✅ Setup in 5 minutes (vs hours of manual installation)
+- ✅ No "works on my machine" issues
+- ✅ Easy to reset/clean environment
+- ✅ Consistent across all team members
+
+### For DevOps:
+- ✅ Production-ready containers
+- ✅ Easy to deploy anywhere
+- ✅ Scalable architecture
+- ✅ Infrastructure as code
+
+### For Project:
+- ✅ Faster onboarding for new developers
+- ✅ Reduced setup issues
+- ✅ Better collaboration
+- ✅ Easier CI/CD integration
+
+---
+
+**Happy Coding! 🚀**

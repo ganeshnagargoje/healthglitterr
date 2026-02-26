@@ -20,7 +20,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../../../..'))
 from typing import Dict, Any, Optional
 import uuid
 from models.database_connection import DatabaseConnection
-from lab_data_normalizer import LabDataNormalizer
+
+# Try relative import first (for package usage), then absolute (for direct execution)
+try:
+    from .lab_data_normalizer import LabDataNormalizer
+except ImportError:
+    from lab_data_normalizer import LabDataNormalizer
 
 
 def normalize_lab_data(

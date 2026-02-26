@@ -4,9 +4,14 @@ Test normalize_lab_data_tool with real database data
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../..'))
+from pathlib import Path
 
-from tools.src.document_data_extraction_tools.normalize_lab_data.normalize_lab_data import normalize_lab_data
+# Add paths for imports
+project_root = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "tools" / "src" / "document_data_extraction_tools" / "normalize_lab_data"))
+
+from normalize_lab_data import normalize_lab_data
 from models.database_connection import DatabaseConnection
 
 

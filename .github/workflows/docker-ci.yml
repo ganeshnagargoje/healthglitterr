@@ -1,0 +1,83 @@
+name: Docker CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Create .env file
+      run: |
+        cp .env.example .env
+        echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
+    
+    - name: Build Docker images
+      run: docker-compose build
+    
+    - name: Start services
+      run: docker-compose up -d
+    
+    - name: Wait for services to be ready
+      run: |
+        echo "Waiting for database..."
+        sleep 15
+        docker-compose exec -T postgres pg_isready -U postgres
+    
+    - name: Run tests
+      run: |
+        docker-compose exec -T app python -m pytest tests/ -v
+    
+    - name: Check database connection
+      run: |
+        docker-compose exec -T app python -c "from models.database_connection import DatabaseConnection; with DatabaseConnection() as db: print('Database connection successful!')"
+    
+    - name: Run integration tests
+      run: |
+        docker-compose exec -T app python tests/tools/document_data_extraction_tools/test_normalize_with_real_data.py
+    
+    - name: Show logs on failure
+      if: failure()
+      run: |
+        docker-compose logs app
+        docker-compose logs postgres
+    
+    - name: Stop services
+      if: always()
+      run: docker-compose down -v
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Build and push
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_USERNAME }}/medical-health-review:latest
+          ${{ secrets.DOCKER_USERNAME }}/medical-health-review:${{ github.sha }}
+        cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/medical-health-review:buildcache
+        cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/medical-health-review:buildcache,mode=max
