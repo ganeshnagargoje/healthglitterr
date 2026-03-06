@@ -1,11 +1,11 @@
 {
-  "user_id": "USER-81985B46D59E",
+  "user_id": "USER-630E68E2C2D7",
   "is_new_patient": true,
   "metadata": {
-    "export_timestamp": "2026-02-19T08:40:40.510992",
+    "export_timestamp": "2026-03-05T18:35:05.629586",
     "validator_version": "2.0",
     "data_type": "patient_health_input",
-    "record_unique_id": "USER-81985B46D59E_20260219_084040510"
+    "record_unique_id": "USER-630E68E2C2D7_20260305_183505629"
   },
   "validation_status": {
     "is_valid": true,
@@ -16,14 +16,12 @@
   },
   "data": {
     "user_id": {
-      "name": "ganesh",
-      "age": 28,
+      "name": "CLI Test",
+      "age": 25,
       "gender": "Male",
-      "height_cm": 166.0,
-      "weight_kg": 73.0,
-      "language_desc": "english"
+      "height_cm": 170.0,
+      "weight_kg": 70.0
     },
-    "user_consent": "Yes",
-    "test_eval_id": 105
+    "user_consent": "Yes"
   }
 }

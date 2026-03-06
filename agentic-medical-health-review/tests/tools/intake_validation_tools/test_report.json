@@ -1,0 +1,274 @@
+{
+  "report_metadata": {
+    "generated_at": "2026-03-05T20:02:58.673854",
+    "tool": "test_validate_input.py",
+    "total_cases": 37,
+    "passed": 37,
+    "failed": 0
+  },
+  "summary": {
+    "pass_rate": "100.0%",
+    "overall_status": "ALL PASSED"
+  },
+  "test_cases": [
+    {
+      "id": "test_valid_input_all_fields",
+      "category": "Basic",
+      "description": "Valid input all fields",
+      "status": "PASS",
+      "duration_sec": 0.0037
+    },
+    {
+      "id": "test_valid_input_minimal_required_only",
+      "category": "Basic",
+      "description": "Valid input minimal required only",
+      "status": "PASS",
+      "duration_sec": 0.0011
+    },
+    {
+      "id": "test_valid_input_with_optional_consent_id",
+      "category": "Basic",
+      "description": "Valid input with optional consent id",
+      "status": "PASS",
+      "duration_sec": 0.0007
+    },
+    {
+      "id": "test_valid_names",
+      "category": "Name",
+      "description": "Valid names",
+      "status": "PASS",
+      "duration_sec": 0.0008
+    },
+    {
+      "id": "test_invalid_empty_name",
+      "category": "Name",
+      "description": "Invalid empty name",
+      "status": "PASS",
+      "duration_sec": 0.0036
+    },
+    {
+      "id": "test_invalid_whitespace_only_name",
+      "category": "Name",
+      "description": "Invalid whitespace only name",
+      "status": "PASS",
+      "duration_sec": 0.0007
+    },
+    {
+      "id": "test_invalid_name_too_long",
+      "category": "Name",
+      "description": "Invalid name too long",
+      "status": "PASS",
+      "duration_sec": 0.0007
+    },
+    {
+      "id": "test_valid_ages",
+      "category": "Age",
+      "description": "Valid ages",
+      "status": "PASS",
+      "duration_sec": 0.0009
+    },
+    {
+      "id": "test_invalid_negative_age",
+      "category": "Age",
+      "description": "Invalid negative age",
+      "status": "PASS",
+      "duration_sec": 0.0009
+    },
+    {
+      "id": "test_invalid_age_exceeds_150",
+      "category": "Age",
+      "description": "Invalid age exceeds 150",
+      "status": "PASS",
+      "duration_sec": 0.0009
+    },
+    {
+      "id": "test_valid_genders",
+      "category": "Gender",
+      "description": "Valid genders",
+      "status": "PASS",
+      "duration_sec": 0.0009
+    },
+    {
+      "id": "test_invalid_gender",
+      "category": "Gender",
+      "description": "Invalid gender",
+      "status": "PASS",
+      "duration_sec": 0.0009
+    },
+    {
+      "id": "test_valid_heights",
+      "category": "Height",
+      "description": "Valid heights",
+      "status": "PASS",
+      "duration_sec": 0.0008
+    },
+    {
+      "id": "test_invalid_height_zero",
+      "category": "Height",
+      "description": "Invalid height zero",
+      "status": "PASS",
+      "duration_sec": 0.0007
+    },
+    {
+      "id": "test_invalid_height_negative",
+      "category": "Height",
+      "description": "Invalid height negative",
+      "status": "PASS",
+      "duration_sec": 0.0023
+    },
+    {
+      "id": "test_valid_weights",
+      "category": "Weight",
+      "description": "Valid weights",
+      "status": "PASS",
+      "duration_sec": 0.0007
+    },
+    {
+      "id": "test_invalid_weight_zero",
+      "category": "Weight",
+      "description": "Invalid weight zero",
+      "status": "PASS",
+      "duration_sec": 0.0009
+    },
+    {
+      "id": "test_invalid_weight_negative",
+      "category": "Weight",
+      "description": "Invalid weight negative",
+      "status": "PASS",
+      "duration_sec": 0.0006
+    },
+    {
+      "id": "test_valid_consent_id",
+      "category": "ConsentID",
+      "description": "Valid consent id",
+      "status": "PASS",
+      "duration_sec": 0.0006
+    },
+    {
+      "id": "test_consent_id_optional",
+      "category": "ConsentID",
+      "description": "Consent id optional",
+      "status": "PASS",
+      "duration_sec": 0.0008
+    },
+    {
+      "id": "test_consent_id_empty_string",
+      "category": "ConsentID",
+      "description": "Consent id empty string",
+      "status": "PASS",
+      "duration_sec": 0.0009
+    },
+    {
+      "id": "test_consent_id_whitespace_only",
+      "category": "ConsentID",
+      "description": "Consent id whitespace only",
+      "status": "PASS",
+      "duration_sec": 0.0008
+    },
+    {
+      "id": "test_iso_language_id_valid",
+      "category": "OptionalFields",
+      "description": "Iso language id valid",
+      "status": "PASS",
+      "duration_sec": 0.0007
+    },
+    {
+      "id": "test_test_eval_id_valid",
+      "category": "OptionalFields",
+      "description": "Eval id valid",
+      "status": "PASS",
+      "duration_sec": 0.0007
+    },
+    {
+      "id": "test_all_optional_fields",
+      "category": "OptionalFields",
+      "description": "All optional fields",
+      "status": "PASS",
+      "duration_sec": 0.0007
+    },
+    {
+      "id": "test_max_age_boundary",
+      "category": "EdgeCases",
+      "description": "Max age boundary",
+      "status": "PASS",
+      "duration_sec": 0.0007
+    },
+    {
+      "id": "test_zero_age",
+      "category": "EdgeCases",
+      "description": "Zero age",
+      "status": "PASS",
+      "duration_sec": 0.0009
+    },
+    {
+      "id": "test_decimal_values_for_biometrics",
+      "category": "EdgeCases",
+      "description": "Decimal values for biometrics",
+      "status": "PASS",
+      "duration_sec": 0.0008
+    },
+    {
+      "id": "test_name_with_special_characters",
+      "category": "EdgeCases",
+      "description": "Name with special characters",
+      "status": "PASS",
+      "duration_sec": 0.0009
+    },
+    {
+      "id": "test_multiple_errors",
+      "category": "MultipleErrors",
+      "description": "Multiple errors",
+      "status": "PASS",
+      "duration_sec": 0.0009
+    },
+    {
+      "id": "test_mixed_valid_invalid",
+      "category": "MultipleErrors",
+      "description": "Mixed valid invalid",
+      "status": "PASS",
+      "duration_sec": 0.0006
+    },
+    {
+      "id": "test_response_structure_on_success",
+      "category": "ResponseStructure",
+      "description": "Response structure on success",
+      "status": "PASS",
+      "duration_sec": 0.0011
+    },
+    {
+      "id": "test_response_structure_on_failure",
+      "category": "ResponseStructure",
+      "description": "Response structure on failure",
+      "status": "PASS",
+      "duration_sec": 0.0008
+    },
+    {
+      "id": "test_consent_approved_variations",
+      "category": "TestCheckConsent",
+      "description": "Consent approved variations",
+      "status": "PASS",
+      "duration_sec": 0.0008
+    },
+    {
+      "id": "test_consent_rejected",
+      "category": "TestCheckConsent",
+      "description": "Consent rejected",
+      "status": "PASS",
+      "duration_sec": 0.0007
+    },
+    {
+      "id": "test_consent_invalid_input",
+      "category": "TestCheckConsent",
+      "description": "Consent invalid input",
+      "status": "PASS",
+      "duration_sec": 0.0009
+    },
+    {
+      "id": "test_consent_missing",
+      "category": "TestCheckConsent",
+      "description": "Consent missing",
+      "status": "PASS",
+      "duration_sec": 0.0007
+    }
+  ]
+}

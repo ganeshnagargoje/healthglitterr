@@ -12,8 +12,6 @@ import json
 import os
 from datetime import datetime
 import uuid
-import argparse
-import sys
 
 
 class UserIDSchema(BaseModel):
@@ -38,10 +36,11 @@ class UserIDSchema(BaseModel):
     @field_validator('gender')
     @classmethod
     def validate_gender(cls, v):
-        valid_genders = {'Male', 'Female', 'Other', 'male', 'female', 'other'}
-        if v not in valid_genders:
+        valid_genders = {'Male', 'Female', 'Other'}
+        capitalized_v = v.strip().capitalize()
+        if capitalized_v not in valid_genders:
             raise ValueError(f"Gender must be one of {valid_genders}")
-        return v.capitalize()
+        return capitalized_v
 
 
 class HealthInputValidationRequest(BaseModel):
@@ -68,7 +67,18 @@ class ValidationResult(BaseModel):
     warnings: list = []
 
 #@tool
-def validate_health_input(user_input: Dict[str, Any]) -> Dict[str, Any]:
+def validate_health_input(
+    name: str,
+    age: int,
+    gender: str,
+    height_cm: float,
+    weight_kg: float,
+    consent_id: Optional[str] = None,
+    iso_language_id: Optional[int] = None,
+    language_desc: Optional[str] = None,
+    test_eval_id: Optional[int] = None,
+    user_consent: str = None,
+) -> Dict[str, Any]:
     """
     Validates health input data for USER_ID and CONSENT_ID fields.
     
@@ -76,16 +86,16 @@ def validate_health_input(user_input: Dict[str, Any]) -> Dict[str, Any]:
     against the health input contract schema. Lab reports are handled separately.
     
     Args:
-        user_input: Dictionary containing the patient health data. Expected keys:
-            - name: Patient's full name
-            - age: Patient's age in years (0-150)
-            - gender: Patient's gender (Male/Female/Other)
-            - height_cm: Patient's height in centimeters
-            - weight_kg: Patient's weight in kilograms
-            - consent_id: Optional consent identifier for data processing
-            - iso_language_id: Optional ISO language code
-            - language_desc: Optional language description
-            - test_eval_id: Optional test evaluation identifier
+        name: Patient's full name
+        age: Patient's age in years (0-150)
+        gender: Patient's gender (Male/Female/Other)
+        height_cm: Patient's height in centimeters
+        weight_kg: Patient's weight in kilograms
+        consent_id: Optional consent identifier for data processing
+        iso_language_id: Optional ISO language code
+        language_desc: Optional language description
+        test_eval_id: Optional test evaluation identifier
+        user_consent: User's explicit consent for data processing (Yes/No) - MANDATORY
     
     Returns:
         Dict containing:
@@ -93,6 +103,9 @@ def validate_health_input(user_input: Dict[str, Any]) -> Dict[str, Any]:
             - validated_data: Validated input data if successful
             - errors: Dict of validation errors if any
             - warnings: List of validation warnings
+    
+    Raises:
+        ValueError: If required fields are missing or invalid
     """
     
     result = {
@@ -101,17 +114,6 @@ def validate_health_input(user_input: Dict[str, Any]) -> Dict[str, Any]:
         "errors": {},
         "warnings": []
     }
-    
-    # Extract variables from user_input dictionary
-    name = user_input.get('name')
-    age = user_input.get('age')
-    gender = user_input.get('gender')
-    height_cm = user_input.get('height_cm')
-    weight_kg = user_input.get('weight_kg')
-    consent_id = user_input.get('consent_id')
-    iso_language_id = user_input.get('iso_language_id')
-    language_desc = user_input.get('language_desc')
-    test_eval_id = user_input.get('test_eval_id')
     
     try:
         # Validate USER_ID fields
@@ -142,6 +144,20 @@ def validate_health_input(user_input: Dict[str, Any]) -> Dict[str, Any]:
                 result["errors"]["consent_id"] = "Consent ID cannot be empty"
                 return result
         
+        # Validate user consent (Yes/No)
+        if user_consent is None:
+            result["errors"]["user_consent"] = "Explicit user consent is required (Yes/No)"
+            return result
+        
+        user_consent_normalized = user_consent.strip().lower()
+        if user_consent_normalized not in ['yes', 'no']:
+            result["errors"]["user_consent"] = "User consent must be 'Yes' or 'No'"
+            return result
+        
+        if user_consent_normalized == 'no':
+            result["errors"]["user_consent"] = "User has NOT given consent. Cannot proceed with data processing."
+            return result
+        
         # Build validated data
         validated_data = {
             "user_id": {
@@ -160,6 +176,9 @@ def validate_health_input(user_input: Dict[str, Any]) -> Dict[str, Any]:
         
         if consent_id:
             validated_data["consent_id"] = consent_id.strip()
+        
+        # Add user consent status
+        validated_data["user_consent"] = user_consent_normalized.capitalize()
         
         if test_eval_id is not None:
             validated_data["test_eval_id"] = test_eval_id
@@ -249,6 +268,16 @@ def collect_patient_input() -> Dict[str, Any]:
     test_eval_id_input = input("9. Test Evaluation ID (optional, press Enter to skip): ").strip()
     test_eval_id = int(test_eval_id_input) if test_eval_id_input else None
     
+    # Collect MANDATORY user consent
+    print("\n--- MANDATORY USER CONSENT ---")
+    print("⚠️  This is a REQUIRED field")
+    while True:
+        user_consent = input("10. Do you give consent to process your health data? (Yes/No): ").strip()
+        if user_consent.lower() in ['yes', 'no']:
+            break
+        else:
+            print("    ✗ Please enter: Yes or No")
+    
     # Return collected data
     user_input = {
         "name": name,
@@ -259,7 +288,8 @@ def collect_patient_input() -> Dict[str, Any]:
         "iso_language_id": iso_language_id,
         "language_desc": language_desc,
         "consent_id": consent_id,
-        "test_eval_id": test_eval_id
+        "test_eval_id": test_eval_id,
+        "user_consent": user_consent
     }
     
     return user_input
@@ -271,21 +301,21 @@ def display_input_summary(user_input: Dict[str, Any]) -> None:
     print("INPUT SUMMARY - PLEASE REVIEW")
     print("=" * 80)
     print("\nPatient Information:")
-    print(f"  Name:               {user_input.get('name', 'Not Provided')}")
-    print(f"  Age:                {user_input.get('age', 'Not Provided')} years")
-    print(f"  Gender:             {user_input.get('gender', 'Not Provided')}")
-    print(f"  Height:             {user_input.get('height_cm', 'Not Provided')} cm")
-    print(f"  Weight:             {user_input.get('weight_kg', 'Not Provided')} kg")
+    print(f"  Name:               {user_input['name']}")
+    print(f"  Age:                {user_input['age']} years")
+    print(f"  Gender:             {user_input['gender']}")
+    print(f"  Height:             {user_input['height_cm']} cm")
+    print(f"  Weight:             {user_input['weight_kg']} kg")
     
-    if user_input.get('iso_language_id'):
+    if user_input['iso_language_id']:
         print(f"  ISO Language ID:    {user_input['iso_language_id']}")
-    if user_input.get('language_desc'):
+    if user_input['language_desc']:
         print(f"  Language:           {user_input['language_desc']}")
-    if user_input.get('consent_id'):
+    if user_input['consent_id']:
         print(f"  Consent ID:         {user_input['consent_id']}")
-    if user_input.get('test_eval_id'):
+    if user_input['test_eval_id']:
         print(f"  Test Eval ID:       {user_input['test_eval_id']}")
-
+    print(f"  User Consent:        {user_input['user_consent']}")
 
 
 def load_user_registry() -> Dict[str, Any]:
@@ -469,66 +499,318 @@ def display_validation_result(result: Dict[str, Any]) -> None:
     print("\n" + "=" * 80)
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Health Input Validator")
-    parser.add_argument("--json", type=str, help="JSON string representing the user input")
-    parser.add_argument("--input", type=str, help="Alias for --json")
-    args = parser.parse_args()
+# =============================================================================
+# SAMPLE TEST CASES — used when this file is run directly as a script
+# =============================================================================
 
-    try:
-        json_input = args.json or args.input
-        
-        if json_input:
-            # Non-interactive mode via CLI argument
-            try:
-                user_input = json.loads(json_input)
-                print("\n[*] Running in non-interactive mode (CLI input detected).")
-            except json.JSONDecodeError as e:
-                print(f"\n❌ Error: Invalid JSON provided. {str(e)}")
-                sys.exit(1)
+SAMPLE_TEST_CASES = [
+    # ── Basic valid inputs ────────────────────────────────────────────────────
+    {
+        "id": "TC-01",
+        "category": "Basic",
+        "description": "All required + optional fields, consent Yes",
+        "expected_valid": True,
+        "input": {
+            "name": "John Doe",
+            "age": 35,
+            "gender": "Male",
+            "height_cm": 180.5,
+            "weight_kg": 75.0,
+            "consent_id": "CONSENT-123",
+            "iso_language_id": 1,
+            "language_desc": "English",
+            "test_eval_id": 1,
+            "user_consent": "Yes",
+        },
+    },
+    {
+        "id": "TC-02",
+        "category": "Basic",
+        "description": "Minimal required fields only (no optional fields)",
+        "expected_valid": True,
+        "input": {
+            "name": "Jane Smith",
+            "age": 28,
+            "gender": "Female",
+            "height_cm": 165.0,
+            "weight_kg": 60.0,
+            "user_consent": "Yes",
+        },
+    },
+    {
+        "id": "TC-03",
+        "category": "Basic",
+        "description": "With consent_id provided, no other optional fields",
+        "expected_valid": True,
+        "input": {
+            "name": "Robert Johnson",
+            "age": 45,
+            "gender": "Male",
+            "height_cm": 175.0,
+            "weight_kg": 85.0,
+            "consent_id": "CONSENT-456",
+            "user_consent": "Yes",
+        },
+    },
+    # ── Name validation ───────────────────────────────────────────────────────
+    {
+        "id": "TC-04",
+        "category": "Name",
+        "description": "Empty name should fail",
+        "expected_valid": False,
+        "input": {
+            "name": "",
+            "age": 30,
+            "gender": "Male",
+            "height_cm": 170.0,
+            "weight_kg": 70.0,
+            "user_consent": "Yes",
+        },
+    },
+    {
+        "id": "TC-05",
+        "category": "Name",
+        "description": "Whitespace-only name should fail",
+        "expected_valid": False,
+        "input": {
+            "name": "   ",
+            "age": 30,
+            "gender": "Male",
+            "height_cm": 170.0,
+            "weight_kg": 70.0,
+            "user_consent": "Yes",
+        },
+    },
+    {
+        "id": "TC-06",
+        "category": "Name",
+        "description": "Name exceeding 100 characters should fail",
+        "expected_valid": False,
+        "input": {
+            "name": "A" * 101,
+            "age": 30,
+            "gender": "Male",
+            "height_cm": 170.0,
+            "weight_kg": 70.0,
+            "user_consent": "Yes",
+        },
+    },
+    # ── Age validation ────────────────────────────────────────────────────────
+    {
+        "id": "TC-07",
+        "category": "Age",
+        "description": "Negative age should fail",
+        "expected_valid": False,
+        "input": {
+            "name": "John Doe",
+            "age": -5,
+            "gender": "Male",
+            "height_cm": 170.0,
+            "weight_kg": 70.0,
+            "user_consent": "Yes",
+        },
+    },
+    {
+        "id": "TC-08",
+        "category": "Age",
+        "description": "Age greater than 150 should fail",
+        "expected_valid": False,
+        "input": {
+            "name": "John Doe",
+            "age": 151,
+            "gender": "Male",
+            "height_cm": 170.0,
+            "weight_kg": 70.0,
+            "user_consent": "Yes",
+        },
+    },
+    # ── Gender validation ─────────────────────────────────────────────────────
+    {
+        "id": "TC-09",
+        "category": "Gender",
+        "description": "Invalid gender value should fail",
+        "expected_valid": False,
+        "input": {
+            "name": "John Doe",
+            "age": 30,
+            "gender": "Unknown",
+            "height_cm": 170.0,
+            "weight_kg": 70.0,
+            "user_consent": "Yes",
+        },
+    },
+    # ── Consent validation ────────────────────────────────────────────────────
+    {
+        "id": "TC-10",
+        "category": "Consent",
+        "description": "User consent = No should fail",
+        "expected_valid": False,
+        "input": {
+            "name": "John Doe",
+            "age": 30,
+            "gender": "Male",
+            "height_cm": 170.0,
+            "weight_kg": 70.0,
+            "user_consent": "No",
+        },
+    },
+    {
+        "id": "TC-11",
+        "category": "Consent",
+        "description": "Missing/None user consent should fail",
+        "expected_valid": False,
+        "input": {
+            "name": "John Doe",
+            "age": 30,
+            "gender": "Male",
+            "height_cm": 170.0,
+            "weight_kg": 70.0,
+            "user_consent": None,
+        },
+    },
+    # ── Edge cases ────────────────────────────────────────────────────────────
+    {
+        "id": "TC-12",
+        "category": "Edge Case",
+        "description": "Maximum boundary age (150) + decimal biometrics",
+        "expected_valid": True,
+        "input": {
+            "name": "Senior Patient",
+            "age": 150,
+            "gender": "Other",
+            "height_cm": 160.5,
+            "weight_kg": 55.3,
+            "user_consent": "Yes",
+        },
+    },
+]
+
+
+def run_sample_tests() -> dict:
+    """
+    Execute all SAMPLE_TEST_CASES against validate_health_input() and build
+    a structured result dict ready to be serialised as a JSON report.
+    """
+    results = []
+    passed = 0
+    failed = 0
+
+    for case in SAMPLE_TEST_CASES:
+        # Call the validation function with the sample input
+        try:
+            actual_result = validate_health_input(**case["input"])
+        except Exception as exc:
+            actual_result = {
+                "is_valid": False,
+                "validated_data": None,
+                "errors": {"unexpected_exception": str(exc)},
+                "warnings": [],
+            }
+
+        actual_valid = actual_result["is_valid"]
+        expected_valid = case["expected_valid"]
+        status = "PASS" if actual_valid == expected_valid else "FAIL"
+
+        if status == "PASS":
+            passed += 1
         else:
-            # Interactive mode (fallback)
-            user_input = collect_patient_input()
-        
-        # Display what was collected for review
-        display_input_summary(user_input)
-        
-        # Validate the collected input
-        result = validate_health_input(user_input)
-        
-        # Display validation result
-        display_validation_result(result)
-        
-        # Save to JSON if validation passed
-        if result['is_valid']:
-            json_filepath, user_id, is_new = save_validation_to_json(result, {
-                'name': user_input.get('name', 'Unknown'),
-                'age': user_input.get('age', 0),
-                'gender': user_input.get('gender', 'Unknown')
-            })
-            
-            print("\n" + "=" * 80)
-            print("DATA EXPORTED & REGISTERED")
-            print("=" * 80)
-            
-            if is_new:
-                print(f"\n✅ NEW PATIENT REGISTERED")
-                print(f"   User ID: {user_id}")
-                print(f"   Patient: {user_input.get('name')} (Age: {user_input.get('age')}, Gender: {user_input.get('gender')})")
-            else:
-                print(f"\n✅ EXISTING PATIENT FOUND")
-                print(f"   User ID: {user_id}")
-                print(f"   New record added to patient history")
-            
-            print(f"\n📁 Record saved to: {json_filepath}")
-            print(f"   History Location: patient_data_exports/{user_id}/")
-            print("\nThis record has been added to the patient's permanent history.")
-            print("All records are uniquely identified by USER_ID + TIMESTAMP.")
-            print("=" * 80)
-        
-    except KeyboardInterrupt:
-        print("\n\n⚠️  Process cancelled by user.")
-    except Exception as e:
-        print(f"\n❌ Unexpected error: {str(e)}")
-        import traceback
-        traceback.print_exc()
+            failed += 1
+
+        results.append(
+            {
+                "id": case["id"],
+                "category": case["category"],
+                "description": case["description"],
+                "status": status,
+                "expected_valid": expected_valid,
+                "actual_valid": actual_valid,
+                "input": {
+                    k: (v if not isinstance(v, str) or len(v) <= 30 else v[:30] + "…")
+                    for k, v in case["input"].items()
+                },
+                "validation_result": {
+                    "errors": actual_result.get("errors", {}),
+                    "warnings": actual_result.get("warnings", []),
+                    "validated_data": actual_result.get("validated_data"),
+                },
+            }
+        )
+
+    total = passed + failed
+    pass_rate = f"{(passed / total * 100):.1f}%" if total else "N/A"
+    overall_status = "ALL PASSED" if failed == 0 else f"{failed} FAILED"
+
+    report = {
+        "report_metadata": {
+            "generated_at": datetime.now().isoformat(),
+            "tool": "validate_health_input",
+            "source_file": os.path.abspath(__file__),
+            "total_cases": total,
+            "passed": passed,
+            "failed": failed,
+        },
+        "summary": {
+            "pass_rate": pass_rate,
+            "overall_status": overall_status,
+        },
+        "test_cases": results,
+    }
+
+    return report
+
+
+def save_sample_report(report: dict) -> str:
+    """Save the sample-run report as a pretty-printed JSON file."""
+    # Resolve reports/ relative to the project root (3 levels up from this file)
+    this_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = this_dir
+    for _ in range(10):
+        if os.path.exists(os.path.join(project_root, "pytest.ini")):
+            break
+        project_root = os.path.dirname(project_root)
+
+    reports_dir = os.path.join(project_root, "reports")
+    os.makedirs(reports_dir, exist_ok=True)
+
+    report_path = os.path.join(reports_dir, "validate_input_sample_run.json")
+    with open(report_path, "w", encoding="utf-8") as f:
+        json.dump(report, f, indent=2)
+
+    return report_path
+
+
+def print_sample_summary(report: dict) -> None:
+    """Print a clean PASS/FAIL table to the terminal."""
+    meta = report["report_metadata"]
+    summary = report["summary"]
+
+    print("\n" + "=" * 80)
+    print("  VALIDATE_INPUT — SAMPLE TEST RUN")
+    print("=" * 80)
+    print(f"  Generated : {meta['generated_at']}")
+    print(f"  Total     : {meta['total_cases']}  |  "
+          f"Passed: {meta['passed']}  |  Failed: {meta['failed']}  |  "
+          f"Pass rate: {summary['pass_rate']}")
+    print("=" * 80)
+    print(f"  {'ID':<7} {'Category':<12} {'Status':<6}  Description")
+    print("-" * 80)
+
+    for tc in report["test_cases"]:
+        icon = "[PASS]" if tc["status"] == "PASS" else "[FAIL]"
+        print(f"  {tc['id']:<7} {tc['category']:<12} {icon}  {tc['description']}")
+
+    print("=" * 80)
+    overall = summary['overall_status'].replace("✅", "").replace("❌", "").strip()
+    print(f"  Overall: {overall}")
+    print("=" * 80)
+
+
+if __name__ == "__main__":
+    print("\n[*] Running sample validation test cases (non-interactive)...")
+
+    report = run_sample_tests()
+    print_sample_summary(report)
+
+    report_path = save_sample_report(report)
+    print(f"\n[>] JSON report saved to: {report_path}\n")
+

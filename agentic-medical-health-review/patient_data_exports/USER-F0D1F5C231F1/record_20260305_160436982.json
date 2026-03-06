@@ -1,0 +1,28 @@
+{
+  "user_id": "USER-F0D1F5C231F1",
+  "is_new_patient": true,
+  "metadata": {
+    "export_timestamp": "2026-03-05T16:04:36.982705",
+    "validator_version": "2.0",
+    "data_type": "patient_health_input",
+    "record_unique_id": "USER-F0D1F5C231F1_20260305_160436982"
+  },
+  "validation_status": {
+    "is_valid": true,
+    "errors": {},
+    "warnings": []
+  },
+  "data": {
+    "user_id": {
+      "name": "amulya singh",
+      "age": 32,
+      "gender": "Male",
+      "height_cm": 167.0,
+      "weight_kg": 85.0,
+      "language_desc": "hindi"
+    },
+    "consent_id": "109",
+    "user_consent": "Yes",
+    "test_eval_id": 109
+  }
+}

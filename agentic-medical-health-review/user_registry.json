@@ -1,0 +1,26 @@
+{
+  "USER-F0D1F5C231F1": {
+    "name": "amulya singh",
+    "age": 32,
+    "gender": "male",
+    "created_at": "2026-03-05T16:04:36.978374",
+    "records_count": 1,
+    "last_updated": "2026-03-05T16:04:36.980144"
+  },
+  "USER-259A935D0E98": {
+    "name": "Amulya",
+    "age": 30,
+    "gender": "Male",
+    "created_at": "2026-03-05T18:25:26.390270",
+    "records_count": 2,
+    "last_updated": "2026-03-05T18:26:26.767719"
+  },
+  "USER-630E68E2C2D7": {
+    "name": "CLI Test",
+    "age": 25,
+    "gender": "Male",
+    "created_at": "2026-03-05T18:35:05.628791",
+    "records_count": 1,
+    "last_updated": "2026-03-05T18:35:05.628821"
+  }
+}
