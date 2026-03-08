@@ -5,6 +5,7 @@
 ---
 
 ## 📋 Quick Links for Developers
+-  Docker Setup - Zero Dependency Installation
 - [README_DOCKER.md](README_DOCKER.md) - Docker quick reference
 ---
 
