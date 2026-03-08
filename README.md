@@ -1,6 +1,6 @@
 # Medical Health Review System
 
-> **🚀 NEW DEVELOPERS: Start with [START_HERE.md](START_HERE.md) for 5-minute setup!**
+> **🚀 NEW DEVELOPERS: Start with [README_DOCKER.md](README_DOCKER.md) for 5-minute setup!**
 
 ---
 
