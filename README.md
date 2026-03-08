@@ -8,11 +8,6 @@
 
 - **[START_HERE.md](START_HERE.md)** ⭐ - **New developer setup (5 minutes)**
 - [README_DOCKER.md](README_DOCKER.md) - Docker quick reference
-- [DOCKER_SETUP_GUIDE.md](DOCKER_SETUP_GUIDE.md) - Comprehensive Docker guide
-- [DOCKER_SOLUTION_SUMMARY.md](DOCKER_SOLUTION_SUMMARY.md) - Why Docker solves dependency issues
-- [WINDOWS_SETUP.md](WINDOWS_SETUP.md) - Windows-specific setup instructions
-- [PIP_BINARY_WHEELS_SOLUTION.md](PIP_BINARY_WHEELS_SOLUTION.md) - Binary wheels configuration
-
 ---
 
 ## 🚀 Quick Start
