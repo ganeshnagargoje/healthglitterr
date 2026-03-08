@@ -5,8 +5,6 @@
 ---
 
 ## 📋 Quick Links for Developers
-
-- **[START_HERE.md](START_HERE.md)** ⭐ - **New developer setup (5 minutes)**
 - [README_DOCKER.md](README_DOCKER.md) - Docker quick reference
 ---
 
