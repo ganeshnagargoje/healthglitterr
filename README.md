@@ -7,6 +7,7 @@
 ## 📋 Quick Links for Developers
 - [Docker Setup - Zero Dependency Installation](README_DOCKER.md)
 - [README_DOCKER.md](README_DOCKER.md) - Docker quick reference
+- [Testing Guide - Medical Health Review System](TESTING_GUIDE.md)
 ---
 
 ## 🚀 Quick Start
