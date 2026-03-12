@@ -20,6 +20,16 @@ The Medical Health Review System is a medical report trend analysis and holistic
 - **Human_Approval**: Explicit authorization from a human user before the system takes certain actions
 - **Multi_Language_Summary**: A health report translated into regional languages (Hindi, Tamil, etc.)
 - **Medication_Interaction_Reminder**: A non-prescriptive notification about potential drug interactions
+- **Normalization**: The process of converting health parameters to standard units, naming conventions, and reference ranges
+- **Canonical_Parameter_Name**: The standardized name used internally for a health parameter regardless of how it appears in source reports
+- **Standard_Unit**: The preferred unit of measurement for a parameter type used for trend analysis and comparison
+- **Reference_Range_Alignment**: The process of normalizing different laboratory reference ranges to a common baseline
+- **Conversion_Factor**: A multiplier used to convert a value from one unit to another (e.g., mg/dL to mmol/L)
+- **Database_Migration**: A versioned script that modifies the database schema in a controlled and reproducible manner
+- **Connection_Pool**: A cache of database connections maintained to improve performance by reusing connections
+- **Data_Encryption_At_Rest**: The encryption of data stored on disk to protect sensitive information from unauthorized access
+- **Docker_Container**: A lightweight, standalone executable package that includes everything needed to run a piece of software
+- **Docker_Compose**: A tool for defining and running multi-container Docker applications using a YAML configuration file
 
 ## Requirements
 
@@ -46,6 +56,20 @@ The Medical Health Review System is a medical report trend analysis and holistic
 3. IF a parameter cannot be extracted with confidence, THEN THE System SHALL flag it for manual review
 4. WHEN multiple reports contain the same parameter, THE System SHALL associate each value with its corresponding timestamp
 5. THE System SHALL preserve the original units of measurement for each extracted parameter
+
+### Requirement 2A: Laboratory Data Normalization
+
+**User Story:** As a patient with lab reports from different laboratories, I want the system to normalize my health parameters to standard units and naming conventions, so that trends can be accurately compared across different reports.
+
+#### Acceptance Criteria
+
+1. WHEN a health parameter is extracted with non-standard units, THE System SHALL convert it to the standard unit for that parameter type
+2. WHEN a parameter has multiple common names (e.g., "HbA1c", "Hemoglobin A1c", "Glycated Hemoglobin"), THE System SHALL map all variants to a single canonical parameter name
+3. WHEN different laboratories provide different reference ranges for the same parameter, THE System SHALL normalize the reference ranges to a standard baseline
+4. IF a parameter's unit is missing or ambiguous, THEN THE System SHALL flag it for manual review and SHALL NOT perform automatic normalization
+5. WHEN normalization is performed, THE System SHALL preserve both the original extracted value with its original unit and the normalized value with the standard unit
+6. WHEN a parameter cannot be normalized due to unknown units or parameter names, THE System SHALL log the failure and preserve the original data without modification
+7. THE System SHALL maintain an audit trail of all normalization operations including the original value, normalized value, conversion factor applied, and timestamp
 
 ### Requirement 3: Trend Analysis and Risk Detection
 
@@ -190,3 +214,30 @@ The Medical Health Review System is a medical report trend analysis and holistic
 3. THE System SHALL allow patients to grant and revoke access to caregivers and doctors
 4. WHEN a doctor accesses patient data, THE System SHALL log the access for audit purposes
 5. THE System SHALL enforce that only the patient or authorized caregivers can modify patient data
+
+### Requirement 15: PostgreSQL Database Persistence
+
+**User Story:** As a system administrator, I want all health data persisted in a PostgreSQL database, so that data is reliably stored, queryable, and can be backed up.
+
+#### Acceptance Criteria
+
+1. THE System SHALL use PostgreSQL as the persistent data store for all medical reports, health parameters, normalized parameters, trends, and audit logs
+2. WHEN the System stores health data, THE System SHALL encrypt sensitive fields at rest using database-level encryption
+3. THE System SHALL implement connection pooling to efficiently manage database connections and optimize performance
+4. WHEN database schema changes are required, THE System SHALL use a migration tool to version and apply schema changes
+5. THE System SHALL maintain referential integrity between related data entities using foreign key constraints
+6. WHEN queries are executed, THE System SHALL use appropriate indexes to ensure query performance meets acceptable thresholds
+7. THE System SHALL implement automated backup procedures to prevent data loss
+
+### Requirement 16: Docker Development Environment
+
+**User Story:** As a developer, I want to run PostgreSQL in a Docker container for local development, so that I can easily set up and tear down the development environment.
+
+#### Acceptance Criteria
+
+1. THE System SHALL provide a Docker Compose configuration that includes PostgreSQL with appropriate version and configuration
+2. WHEN a developer runs docker-compose up, THE System SHALL start PostgreSQL with the correct database, user, and password configured
+3. THE System SHALL persist PostgreSQL data to a Docker volume to prevent data loss when containers are restarted
+4. WHEN the PostgreSQL container starts, THE System SHALL automatically run initialization scripts to create the database schema
+5. THE System SHALL expose PostgreSQL on a configurable port for local development access
+6. THE System SHALL provide environment variable configuration for database credentials to avoid hardcoding sensitive information

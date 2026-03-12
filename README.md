@@ -1,23 +1,28 @@
 # Medical Health Review System
 
-> **🚀 NEW DEVELOPERS: Start with [README_DOCKER.md](README_DOCKER.md) for 5-minute setup!**
+> **🚀 5-minute setup with Docker - Zero dependencies required!**
 
----
+## Table of Contents
+- [Quick Start](#-quick-start)
+- [Team](#-team)
+- [Project Overview](#-project-overview)
+- [Project Structure](#-project-structure)
+- [Tools Implemented](#️-tools-implemented)
+- [Docker Setup](#-docker-setup)
+- [Testing](#-testing)
+- [Database](#-database)
+- [Development](#-development)
+- [Troubleshooting](#-troubleshooting)
 
-## 📋 Quick Links for Developers
-- [Docker Setup - Zero Dependency Installation](README_DOCKER.md)
-- [README_DOCKER.md](README_DOCKER.md) - Docker quick reference
-- [Testing Guide - Medical Health Review System](TESTING_GUIDE.md)
 ---
 
 ## 🚀 Quick Start
 
-### For New Developers:
 ```bash
 # 1. Install Docker Desktop (only requirement!)
 # Download from: https://www.docker.com/products/docker-desktop/
 
-# 2. Clone repository
+# 2. Clone and setup
 git clone <repository-url>
 cd healthglitterr
 
@@ -30,18 +35,6 @@ chmod +x setup.sh
 ./setup.sh
 
 # Done! Everything is running ✅
-```
-
-### For Existing Developers:
-```bash
-# Start services
-docker-compose up -d
-
-# Stop services
-docker-compose down
-
-# Run tests
-docker-compose exec app python -m pytest tests/
 ```
 
 ---
@@ -137,57 +130,114 @@ healthglitterr/
     └── 03-additional-parameter-mappings.sql
 ```
 
----
+## 🧪 Testing
 
-## 🛠️ Tools Implemented
+### Current Status
+**55/55 tests passing (100%)**
+- Document Data Extraction: 17 tests
+- Intake Validation: 38 tests
 
-### 1. Lab Report Parser
-- **Location:** `tools/src/document_data_extraction_tools/lab_report_parser/`
-- **Purpose:** Extract lab data from PDF/image reports using OCR
-- **Features:**
-  - PDF to image conversion
-  - PaddleOCR text extraction
-  - LLM-based structured data extraction
-  - Supports multiple file formats
-
-### 2. Normalize Lab Data
-- **Location:** `tools/src/document_data_extraction_tools/normalize_lab_data/`
-- **Purpose:** Standardize extracted lab parameters
-- **Features:**
-  - Parameter name standardization
-  - Unit conversion
-  - Reference range alignment
-  - Confidence scoring
-  - Audit trail logging
-
-### 3. End-to-End Integration
-- **Test:** `tests/tools/document_data_extraction_tools/test_end_to_end_integration.py`
-- **Workflow:** PDF → Extract → Normalize → Database
-- **Result:** 100% success rate on sample data
-
----
-
-## 🧪 Running Tests
+### Quick Test Commands
 
 ```bash
 # All tests
 docker-compose exec app python -m pytest tests/ -v
 
-# Specific tests
-docker-compose exec app python tests/tools/document_data_extraction_tools/test_normalize_with_real_data.py
-docker-compose exec app python tests/tools/document_data_extraction_tools/test_real_file.py tests/test_data/sample_reports/lab_report1_page_1.pdf
-docker-compose exec app python tests/tools/document_data_extraction_tools/test_end_to_end_integration.py tests/test_data/sample_reports/lab_report1_page_1.pdf
+# Specific test suites
+docker-compose exec app python -m pytest tests/tools/document_data_extraction_tools/ -v
+
+# Using PowerShell script (Windows)
+.\run-tests.ps1
+
+# Using Makefile (Linux/Mac)
+make test
+```
+
+### Test Structure
+```
+agentic-medical-health-review/tests/
+├── tools/
+│   ├── document_data_extraction_tools/
+│   │   ├── test_normalize_lab_data.py
+│   │   ├── test_normalize_with_real_data.py
+│   │   ├── test_end_to_end_integration.py
+│   │   └── test_real_file.py
+│   └── intake_validation_tools/
+│       └── test_validate_input.py
+└── test_data/
+    └── sample_reports/
+```
+
+### Test Markers
+
+Run specific test categories:
+
+```bash
+# Unit tests only
+docker-compose exec app python -m pytest tests/ -v -m unit
+
+# Integration tests only
+docker-compose exec app python -m pytest tests/ -v -m integration
+
+# Database tests only
+docker-compose exec app python -m pytest tests/ -v -m database
+
+# Skip slow tests
+docker-compose exec app python -m pytest tests/ -v -m 'not slow'
+```
+
+### Adding New Tests
+
+Example test template:
+
+```python
+import pytest
+from models.database_connection import DatabaseConnection
+
+@pytest.mark.unit
+def test_my_feature(test_user_id, create_health_parameter):
+    """Test description"""
+    # Arrange
+    param_id = create_health_parameter("Test Param", 100.0, "mg/dL")
+    
+    # Act
+    result = my_function(param_id)
+    
+    # Assert
+    assert result['success'] == True
+    # Cleanup is automatic via fixture
 ```
 
 ---
 
 ## 📊 Database
 
-### Services:
-- **PostgreSQL 16** - Main database
-- **pgAdmin** (optional) - Database UI at http://localhost:5050
+### PostgreSQL 16 Setup
 
-### Tables:
+**Services:**
+- PostgreSQL 16 - Main database
+- pgAdmin (optional) - Database UI at http://localhost:5050
+
+**Connection Details:**
+- Host: localhost
+- Port: 5432
+- Database: medical_health_review
+- User: postgres
+- Password: postgres (change in .env)
+- Connection String: `postgresql://postgres:postgres@localhost:5432/medical_health_review`
+
+### Quick Access
+
+```bash
+# Via Docker
+docker-compose exec postgres psql -U postgres -d medical_health_review
+
+# Via host (when running)
+psql -h localhost -U postgres -d medical_health_review
+```
+
+### Database Tables
+
 - `users` - User accounts
 - `medical_reports` - Uploaded reports
 - `health_parameters` - Raw lab data
@@ -197,26 +247,38 @@ docker-compose exec app python tests/tools/document_data_extraction_tools/test_e
 - `unit_conversion_rules` - Unit conversion factors
 - `standard_reference_ranges` - Reference ranges
 
-### Access:
-```bash
-# Via Docker
-docker-compose exec postgres psql -U postgres -d medical_health_review
+### Backup & Restore
 
-# Via host (when running)
-psql -h localhost -U postgres -d medical_health_review
+```bash
+# Backup
+docker-compose exec postgres pg_dump -U postgres medical_health_review > backup.sql
+
+# Restore
+docker-compose exec -T postgres psql -U postgres medical_health_review < backup.sql
+```
+
+### pgAdmin (Optional)
+
+```bash
+# Start pgAdmin
+docker-compose --profile admin up -d
+
+# Access at http://localhost:5050
+# Email: admin@example.com
+# Password: admin
 ```
 
 ---
 
 ## 🔧 Development
 
-### Daily Workflow:
+### Daily Workflow
+
 ```bash
 # 1. Start services
 docker-compose up -d
 
-# 2. Make code changes (on your machine)
-# Changes automatically reflected in container
+# 2. Make code changes (automatically reflected in container)
 
 # 3. Run tests
 docker-compose exec app python -m pytest tests/
@@ -228,19 +290,59 @@ docker-compose logs -f app
 docker-compose down
 ```
 
-### After Dependency Changes:
+### Common Commands
+
+#### Using Makefile (Linux/Mac)
 ```bash
+make start          # Start all services
+make stop           # Stop all services
+make test           # Run all tests
+make logs           # View logs
+make shell          # Access application shell
+make db-shell       # Access database shell
+make rebuild        # Rebuild containers
+make help           # Show all commands
+```
+
+#### Using Docker Compose (All Platforms)
+```bash
+# Start services
+docker-compose up -d
+
+# Stop services
+docker-compose down
+
+# View logs
+docker-compose logs -f
+
+# Access shell
+docker-compose exec app bash
+
+# Rebuild after dependency changes
 docker-compose down
 docker-compose build --no-cache
 docker-compose up -d
 ```
 
----
+## 🚀 Production Deployment
 
+### Build Production Image
+```bash
+docker build -t medical-health-review:1.0.0 .
+```
 
-## 📝 License
+### Push to Registry
+```bash
+docker tag medical-health-review:1.0.0 your-registry/medical-health-review:1.0.0
+docker push your-registry/medical-health-review:1.0.0
+```
 
-[Add your license here]
+### Production Checklist
+- Remove volume mounts for source code
+- Use production environment variables
+- Implement proper secrets management
+- Add health checks and monitoring
+- Configure logging and alerting
 
 ---
 
