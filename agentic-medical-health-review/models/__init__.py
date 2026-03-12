@@ -10,10 +10,14 @@ from .database_connection import DatabaseConnection
 
 # Import NormalizationResult after NormalizedParameter to avoid circular import
 from .normalization_result import NormalizationResult
+from .mismatch_result import MismatchResult
+from .trend_result import TrendResult
 
 __all__ = [
     'LabParameter',
     'NormalizedParameter',
     'NormalizationResult',
+    'MismatchResult',
+    'TrendResult',
     'DatabaseConnection',
 ]
