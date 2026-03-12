@@ -4,10 +4,6 @@ Setup test data for normalize_lab_data tests
 This script creates test users and health parameters in the database
 """
 
-import sys
-import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../..'))
-
 import uuid
 from models.database_connection import DatabaseConnection
 

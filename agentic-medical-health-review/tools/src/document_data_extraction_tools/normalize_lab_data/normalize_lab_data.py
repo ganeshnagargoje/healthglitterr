@@ -13,19 +13,10 @@ This tool integrates with PostgreSQL database to:
 - Update health_parameters status
 """
 
-import sys
-import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../../..'))
-
 from typing import Dict, Any, Optional
 import uuid
 from models.database_connection import DatabaseConnection
-
-# Try relative import first (for package usage), then absolute (for direct execution)
-try:
-    from .lab_data_normalizer import LabDataNormalizer
-except ImportError:
-    from lab_data_normalizer import LabDataNormalizer
+from tools.src.document_data_extraction_tools.normalize_lab_data.lab_data_normalizer import LabDataNormalizer
 
 
 def normalize_lab_data(

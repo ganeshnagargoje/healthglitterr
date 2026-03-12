@@ -12,12 +12,7 @@ from PIL import Image
 os.environ['PADDLE_PIR_ENABLED'] = '0'
 
 from paddleocr import PaddleOCR
-
-# Handle both relative and absolute imports
-try:
-    from .file_validator import FileValidator
-except ImportError:
-    from file_validator import FileValidator
+from tools.src.document_data_extraction_tools.lab_report_parser.file_validator import FileValidator
 
 
 class LabReportParser:
@@ -364,10 +359,7 @@ def extract_structured_lab_data(file_path, llm=None, model_name="gpt-4o-mini"):
         raw_text = parser.extract_text_from_file(file_path)
         
         # Use LLM-based extraction
-        try:
-            from .llm_structured_extractor import extract_with_llm
-        except ImportError:
-            from llm_structured_extractor import extract_with_llm
+        from tools.src.document_data_extraction_tools.lab_report_parser.llm_structured_extractor import extract_with_llm
         
         return extract_with_llm(raw_text, str(file_path), llm=llm, model_name=model_name)
         
