@@ -86,3 +86,12 @@ stateDiagram-v2
 **Output Phase**
 - Generate_Report → structured output as specified
 - Deliver_Output → sent to user
+ 
+ ## Well-structured multi-agent medical health review system with:
+
+### Document Ingestion Agent (you're here) — Upload, extract text (OCR/PDF), structure data using lab_report_parser_tool + normalize_lab_data_tool
+### Analysis Agent — Run mismatch_detection_tool + trend_computation_tool + risk_assessment_tool
+### Safety & Review Agent — drug_interaction_check_tool + doctor_approval_gate_tool (HITL)
+### Holistic Health Agent — lifestyle_recommendation_tool + diet_recommendation_tool
+### Output & Localization Agent — output_formatter_tool + localization_tool
+### Orchestrator Agent — The PDA loop that coordinates all the above, manages state transitions, and enforces the audit trail

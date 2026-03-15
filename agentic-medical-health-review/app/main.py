@@ -51,8 +51,10 @@ def create_app() -> FastAPI:
     # Register routers
     from app.api.routes.consent import router as consent_router
     from app.api.routes.auth import router as auth_router
+    from app.api.routes.profile import router as profile_router
     app.include_router(consent_router, prefix="/api/users", tags=["users"])
     app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
+    app.include_router(profile_router, prefix="/api/users", tags=["users"])
     
     # Health check endpoint
     @app.get("/health")

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import './Dashboard.css'
 
-function Dashboard({ user, onLogout }) {
+function Dashboard({ user, onLogout, onProfileClick }) {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
@@ -84,7 +84,7 @@ function Dashboard({ user, onLogout }) {
           <span className="nav-title">HealthGlitterr <span className="nav-accent">AI</span></span>
         </div>
         <div className="nav-actions">
-          <div className="avatar">{initials}</div>
+          <div className="avatar" onClick={onProfileClick} style={{ cursor: 'pointer' }} title="My Profile">{initials}</div>
           <button className="signout-btn" onClick={onLogout}>Sign Out</button>
         </div>
       </nav>

@@ -20,10 +20,17 @@ CREATE TYPE operation_status AS ENUM ('success', 'failed', 'flagged');
 CREATE TABLE users (
     user_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     email VARCHAR(255) UNIQUE NOT NULL,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    birth_date DATE,
+    gender VARCHAR(10),
+    height_cm DECIMAL(5, 1),
+    weight_kg DECIMAL(5, 1),
     role user_role NOT NULL,
     preferred_language VARCHAR(10) DEFAULT 'en',
     consent_status BOOLEAN DEFAULT FALSE,
     consent_timestamp TIMESTAMP,
+    profile_complete BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

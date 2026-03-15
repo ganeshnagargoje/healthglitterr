@@ -22,3 +22,9 @@ class IUserRepository(ABC):
     @abstractmethod
     def update_consent(self, email: str, role: str, language: str) -> Optional[User]:
         pass
+
+    @abstractmethod
+    def update_profile(self, email: str, first_name: str, last_name: str,
+                       birth_date, gender: str, height_cm: float,
+                       weight_kg: float) -> Optional[User]:
+        pass
